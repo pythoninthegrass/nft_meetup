@@ -62,8 +62,11 @@ exit  # ctrl-d
 ## TODO
 * ~~asdf~~
 * wsl
-  * enable
-  * `.wslconfig` options
+    * enable
+    * `.wslconfig` options
+* `.vscode` settings
+    * add arguments
+    * env  
 * debug path / dependencies
 * submodule repo
 * gh actions
