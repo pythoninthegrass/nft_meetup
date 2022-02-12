@@ -8,11 +8,11 @@ Takes the Medium article [Create Your Own NFT Collection With Python](https://be
     git clone https://github.com/UniqueNetwork/substrapunks.git
     ```
     * **NOTE**: this was integrated into the script with `gitpython`. No need to run manually
-* [Install Poetry](https://python-poetry.org/docs/#installation)
-    ```bash
-    # Install Poetry
-    curl -sSL https://install.python-poetry.org | $(which python3) -
-    ```
+## Setup
+* Install 
+    * [editorconfig](https://editorconfig.org/)
+    * [asdf](https://asdf-vm.com/manage/core.html#installation-setup)
+    * [poetry](https://python-poetry.org/docs/)
 
 ## Usage
 ### asdf
