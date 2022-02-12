@@ -32,3 +32,12 @@ poetry run python main.py
 # Deactivate venv
 exit  # ctrl-d
 ```
+
+## TODO
+* asdf
+* wsl
+  * enable
+  * `.wslconfig` options
+* debug path / dependencies
+* submodule repo
+* gh actions
