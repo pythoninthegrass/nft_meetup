@@ -8,6 +8,7 @@ authors = ["pythoninthegrass <4097471+pythoninthegrass@users.noreply.github.com>
 python = "^3.10"
 Pillow = "^9.0.1"
 ipython = "^8.0.1"
+GitPython = "^3.1.26"
 
 [tool.poetry.dev-dependencies]
 icecream = "^2.1.1"
