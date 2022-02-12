@@ -8,7 +8,6 @@ Takes the Medium article [Create Your Own NFT Collection With Python](https://be
     git clone https://github.com/UniqueNetwork/substrapunks.git
     ```
     * **NOTE**: this was integrated into the script with `gitpython`. No need to run manually
-## Setup
 * Install 
     * [editorconfig](https://editorconfig.org/)
     * [asdf](https://asdf-vm.com/manage/core.html#installation-setup)
