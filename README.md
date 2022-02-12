@@ -4,7 +4,7 @@ Takes the Medium article [Create Your Own NFT Collection With Python](https://be
 
 ## Setup
 * Download the [substrapunk](https://github.com/usetech-llc/substrapunks/archive/refs/heads/master.zip) repo files and extract into the current directory.
-* Install Poetry
+* [Install Poetry](https://python-poetry.org/docs/#installation)
     ```bash
     # Install
     curl -sSL https://install.python-poetry.org | $(which python3) -

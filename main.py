@@ -4,6 +4,23 @@ import random
 from pathlib import Path
 from PIL import Image
 
+# TODO: use requests to clone substra repo and unzip with os(?)
+
+# env
+cwd = Path.cwd()
+
+# generate images directory
+Path(cwd/'images').mkdir(parents=True, exist_ok=True)
+# use pathlib to glob the substrapunks directory in working directory
+# face_parts = Path('substrapunks/scripts/face_parts')
+
+# face directory
+for p in cwd.rglob('**/substra*/scripts/*'):
+    if p.is_dir() and p.name == 'face_parts':
+        print(f"found {p}")
+        face_parts = p
+        break
+
 # TODO: split up traits into separate files, then import
 """
 Each image is made up a series of traits
@@ -186,12 +203,6 @@ print(hair_count)
 print(mouth_count)
 print(nose_count)
 
-
-"""
-Generate Images
-"""
-Path('images').mkdir(parents=True, exist_ok=True)
-face_parts = Path('substrapunks-master/scripts/face_parts')
 
 # TODO: traverse iteritems by directory
 for item in all_images:
