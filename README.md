@@ -3,10 +3,11 @@
 Takes the Medium article [Create Your Own NFT Collection With Python](https://betterprogramming.pub/create-your-own-nft-collection-with-python-82af40abf99f) and cleans up the code to generate NFT images.
 
 ## Setup
-* Clone the [substrapunk](https://github.com/usetech-llc/substrapunks) repo files and extract into the current directory
+* ~~Clone the [substrapunks](https://github.com/usetech-llc/substrapunks) repo files and extract into the current directory~~
     ```bash
     git clone https://github.com/UniqueNetwork/substrapunks.git
     ```
+    * **NOTE**: this was integrated into the script with `gitpython`. No need to run manually
 * [Install Poetry](https://python-poetry.org/docs/#installation)
     ```bash
     # Install Poetry
