@@ -3,13 +3,35 @@
 # import argparse
 import git
 import json
+import os
 import random
+from decouple import config
+from functools import cache
+from icecream import ic
 from pathlib import Path
 from PIL import Image
 from traits import *
 
 # env
 cwd = Path.cwd()
+env = Path('.env')
+
+# pinata.cloud information (hard-coded)
+IMAGES_BASE_URL = ""
+PROJECT_NAME = ""
+
+if env.exists():
+    IMAGES_BASE_URL = config("IMAGES_BASE_URL")
+    PROJECT_NAME = config("PROJECT_NAME")
+else:
+    IMAGES_BASE_URL = os.environ.get("IMAGES_BASE_URL")
+    PROJECT_NAME = os.getenv("PROJECT_NAME")
+
+# Validate pinata env variables
+if IMAGES_BASE_URL == "" or PROJECT_NAME == "":
+    print("Please enter the base url for your images and the name of your project")
+    IMAGES_BASE_URL = input("IMAGES_BASE_URL: ")
+    PROJECT_NAME = input("PROJECT_NAME: ")
 
 # generate images directory
 Path(cwd/'images').mkdir(parents=True, exist_ok=True)
@@ -34,7 +56,9 @@ for p in cwd.rglob('**/substra*/scripts/*'):
 TOTAL_IMAGES = 100 # Number of random unique images we want to generate
 all_images = []
 
-def create_new_image():
+
+# TODO: `RecursionError: maximum recursion depth exceeded`
+def rando_image():
     """ A recursive function to generate unique image combinations """
     new_image = {}
 
@@ -47,7 +71,7 @@ def create_new_image():
     new_image ["Nose"] = random.choices(nose, nose_weights)[0]
 
     if new_image in all_images:
-        return create_new_image()
+        return rando_image()
     else:
         return new_image
 
@@ -97,8 +121,8 @@ def trait_counts():
     return face_count, ears_count, eyes_count, hair_count, mouth_count, nose_count
 
 
-def gen_images():
-    """ Generate Images """
+def gen_image():
+    """ Creates composites for each trait """
     # TODO: traverse iteritems by directory
     for item in all_images:
         im1 = Image.open(f'{face_parts}/face/{face_files[item["Face"]]}.png').convert('RGBA')
@@ -121,35 +145,33 @@ def gen_images():
         rgb_im.save(f"images/{file_name}")
 
 
-def main():
-    """
-    Pt 1: Generate NFT images
-    """
-    # check if images directory is empty, if not, user input to continue
-    if len(list(cwd.rglob('**/images/*'))) > 0:
-        print("Images directory is not empty, overwrite? (y/n)")
-        if input() == 'y':
-            print("Continuing...")
-        elif input() == 'n':
-            input("Continue with existing images? (y/n)")
-            if input() == 'y':
-                print("Continuing...")
-            else:
-                print("Exiting...")
-                exit()
-        else:
-            print("Unrecognized input. Exiting...")
-            exit()
+def getAttribute(key, value):
+    return {
+        "trait_type": key,
+        "value": value
+    }
 
+def create_new_image():
+    """ Create a new image """
+    rando_image()
+
+    """
+    TODO: `RecursionError: maximum recursion depth exceeded`; was working under `main` and global definitions
+    File "/Users/lance/git/nft_meetup/main.py", line 190, in main
     create_new_image()
-
+    File "/Users/lance/git/nft_meetup/main.py", line 159, in create_new_image
+        new_trait_image = create_new_image()
+    File "/Users/lance/git/nft_meetup/main.py", line 159, in create_new_image
+        new_trait_image = create_new_image()
+    File "/Users/lance/git/nft_meetup/main.py", line 159, in create_new_image
+        new_trait_image = create_new_image()
+    [Previous line repeated 979 more times]
+    """
     # Generate the unique combinations based on trait weightings
     for i in range(TOTAL_IMAGES):
         new_trait_image = create_new_image()
         all_images.append(new_trait_image)
-
     all_images_unique(all_images)
-
     print("Are all images unique?", all_images_unique(all_images))
 
     # Add token ID to each image
@@ -160,20 +182,41 @@ def main():
     print(all_images)
 
     trait_counts()
+    gen_image()
 
-    gen_images()
+
+def main():
+    """
+    Pt 1: Generate NFT images
+    """
+    # check if images directory is empty, if not, user input to continue
+    count_files = sum(1 for x in Path(cwd/'images').glob('*') if x.is_file())
+    if count_files > 0:
+        print("Images directory is not empty, overwrite? (y/n)")
+        if input() == 'y':
+            print("Continuing...")
+            create_new_image()
+        else:
+            print("Using previous images...")
+    else:
+        print("Images directory is empty, continuing...")
+        create_new_image()
+
 
     """
     Pt II: Generate NFT metadata
     """
     # Export to json
     meta_file = f"{cwd}/metadata/metadata.json"
-    Path(meta_file).parents[0].mkdir(parents=True, exist_ok=True)
+    try:
+        Path(meta_file).parents[0].mkdir(parents=True, exist_ok=False)
+    except FileExistsError:
+        pass
 
     # Check if file exists or is empty then write
     if not Path(meta_file).exists() or Path(meta_file).stat().st_size > 0:
         Path(meta_file).write_text(json.dumps(all_images, indent=4))
-    else:
+    elif Path(meta_file).exists():
         print(f"{meta_file} already exists. Overwrite? (y/n)")
         if input() == 'y':
             Path(meta_file).write_text(json.dumps(all_images, indent=4))
@@ -181,28 +224,16 @@ def main():
     """
     Generate metadata for each image
     """
-    fn = open(meta_file, "w")
-    data = json.load(fn)
+    # clean up json file with nested dicts
+    json_list = []
+    with open(meta_file, "a+") as fn:
+        for _ in fn:
+            data = json.loads(_)
+            json_list.append(data)
 
-    # pinata.cloud information
-    IMAGES_BASE_URL = ""
-    PROJECT_NAME = ""
-
-    # Validate pinata env variables
-    if IMAGES_BASE_URL == "" or PROJECT_NAME == "":
-        print("Please enter the base url for your images and the name of your project")
-        IMAGES_BASE_URL = input("IMAGES_BASE_URL: ")
-        PROJECT_NAME = input("PROJECT_NAME: ")
-
-
-    def getAttribute(key, value):
-        return {
-            "trait_type": key,
-            "value": value
-        }
-
-
-    for i in data:
+    # TODO: debug empty json_list
+    # Generate metadata for each image
+    for i in json_list:
         token_id = i['tokenId']
         token = {
             "image": IMAGES_BASE_URL + str(token_id) + '.png',
@@ -217,10 +248,8 @@ def main():
         token["attributes"].append(getAttribute("Mouth", i["Mouth"]))
         token["attributes"].append(getAttribute("Nose", i["Nose"]))
 
-        with open('./metadata/' + str(token_id) + ".json", 'w') as outfile:
+        with open(f"{cwd}/metadata/" + str(token_id) + ".json", 'w') as outfile:
             json.dump(token, outfile, indent=4)
-
-    fn.close()
 
 
 if __name__ == "__main__":
