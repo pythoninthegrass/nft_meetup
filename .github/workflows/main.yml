@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-it-repo:
+  update-repo:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout pythonistas repo with SSH Deploy Key
