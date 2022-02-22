@@ -1,0 +1,36 @@
+name: Send submodule updates to parent 'pythonistas' repo
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  update-it-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pythonistas repo with SSH Deploy Key
+        uses: actions/checkout@v2
+        with:
+          repository:  pythoninthegrass/pythonistas 
+          path: main
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Checkout submodule nft_meetup
+        uses: actions/checkout@v2
+        with:
+          path: master/nft_meetup
+
+      - name: Commit submodule update to IT repo using SSH Deploy Key
+        env:
+          GIT_SSH_KEY: ${{ secrets.DEPLOY_KEY }}
+        run: |
+          cd master
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions - update submodules"
+          git add nft_meetup
+          git status
+          git commit -m "Updated nft_meetup submodule to latest"
+          git push
