@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 
+from email.policy import default
 import json
+import os
+from decouple import config
+from pathlib import Path
 
 # SOURCE: https://gist.github.com/BgtEwoud/ec4dd21f6c82ca4bcd2c92af5d5d0ac9#file-metadata-py
 
@@ -13,9 +17,15 @@ Use this script after metadata_all.py to generate metadata for each image
 f = open('./metadata/all-traits.json',)
 data = json.load(f)
 
+env = Path('.env')
+
 # Changes this IMAGES_BASE_URL to yours
-IMAGES_BASE_URL = "https://gateway.pinata.cloud/ipfs/<your-ipfs-hash>"
-PROJECT_NAME = "<your-project-name>"
+if env.exists():
+    IMAGES_BASE_URL = config('IMAGES_BASE_URL', default="https://gateway.pinata.cloud/ipfs/<your-ipfs-hash>")
+    PROJECT_NAME = config('PROJECT_NAME', default="<your-project-name>")
+else:
+    HOST = os.getenv('IMAGES_BASE_URL')
+    PROJECT_NAME = os.getenv('PROJECT_NAME')
 
 
 def getAttribute(key, value):
