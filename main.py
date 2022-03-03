@@ -29,6 +29,7 @@ for p in cwd.rglob('**/substra*/scripts/*'):
         face_parts = p
         break
 
+# TODO: fix image listing check
 # check if images directory is empty, if not, user input to continue
 if len(list(cwd.rglob('**/images/*'))) > 0:
     print("Images directory is not empty, overwrite? (y/n)")
