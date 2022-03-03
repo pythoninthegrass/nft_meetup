@@ -3,6 +3,8 @@ substrapunks*/
 images*/
 metadata/
 screens/
+artifacts/
+cache/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
