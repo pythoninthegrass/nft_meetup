@@ -30,7 +30,7 @@ hair = [
 hair_weights = [10 , 10 , 10 , 10 ,10, 10, 10 ,10 ,10, 7 , 1 , 2]
 
 mouth = ['Black Lipstick', 'Red Lipstick', 'Big Smile', 'Smile', 'Teeth Smile', 'Purple Lipstick']
-mouth_weights = [10, 10,50, 10,15, 5]
+mouth_weights = [10, 10, 50, 10, 15, 5]
 
 nose = ['Nose', 'Nose Ring']
 nose_weights = [90, 10]
